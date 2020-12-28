@@ -5,8 +5,6 @@ name: "Build"
 on:
   pull_request:
   push:
-    branches:
-      - "master"
 
 env:
   COMPOSER_ROOT_VERSION: "0.12.x-dev"
