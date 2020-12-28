@@ -24,9 +24,9 @@ class TemplateTypeHelper
 				if ($newType instanceof ErrorType) {
 					$newType = $type->getBound();
 				}
-				if ($newType instanceof StaticType) {
+				/*if ($newType instanceof StaticType) {
 					$newType = $newType->getStaticObjectType();
-				}
+				}*/
 
 				return $newType;
 			}
