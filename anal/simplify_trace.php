@@ -60,7 +60,7 @@ class File
         }
 
         $origLLen = strlen($l);
-        $l = preg_replace('~^.{22}(?= *->)~', '', $l);
+        $l = preg_replace('~^.{22}(?= *(?:->|>=>))~', '', $l);
         if (strlen($l) === $origLLen) {
            if (preg_match('~^TRACE END ~', $this->getNextLine())) { // verify end
                 if ($this->getNextLine() !== '') { // skip
@@ -89,8 +89,8 @@ class File
 
     public function convertFile(): void
     {
-        $statLines = 0; // based on fixed size
-        $statSize = 0; // based on fixed size
+        $statLines = 0;
+        $statSize = 0; // based on fixed line size
         $statStartTs = microtime(true);
         while (true) {
             $l = $this->getFixedLine();
@@ -112,9 +112,9 @@ class File
 
 foreach (array_diff(scandir(__DIR__ . '/in'), ['.', '..']) as $n) {
 
-//    if (!preg_match('~no-opcache~', $n)) {
-//        continue;
-//    }
+    if (!preg_match('~c1~', $n)) {
+        continue;
+    }
 
     echo '-- starting: ' . $n . "\n";
     $fNoOpcache = new File(__DIR__ . '/in/' . $n, __DIR__ . '/out/' . $n);

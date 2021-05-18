@@ -212,7 +212,7 @@ class AnalyseApplication
 
 	private function updateMemoryLimitFile(): void
 	{
-		$bytes = memory_get_peak_usage(true);
+		$bytes = 1024 * 1024 * 1024;//memory_get_peak_usage(true);
 		$megabytes = ceil($bytes / 1024 / 1024);
 		file_put_contents($this->memoryLimitFile, sprintf('%d MB', $megabytes));
 	}

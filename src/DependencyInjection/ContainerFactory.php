@@ -136,7 +136,7 @@ class ContainerFactory
 
 		$finder = new Finder();
 		$finder->name('Container_*')->in($configurator->getContainerCacheDirectory());
-		$twoDaysAgo = time() - 24 * 60 * 60 * 2;
+		/*$twoDaysAgo = time() - 24 * 60 * 60 * 2;
 
 		foreach ($finder as $containerFile) {
 			$path = $containerFile->getRealPath();
@@ -151,7 +151,7 @@ class ContainerFactory
 			}
 
 			@unlink($path);
-		}
+		}*/
 	}
 
 	public function getCurrentWorkingDirectory(): string
