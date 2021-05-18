@@ -3,3 +3,4 @@
 in/
 out/*
 !out/t_cx_210362700.zip
+!out/t_c*_210362700_short.xt
