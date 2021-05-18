@@ -1,4 +1,5 @@
 *.xd
 *.rar
 in/
-out/
+out/*
+!out/t_cx_210362700.zip
