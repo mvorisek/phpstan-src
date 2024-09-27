@@ -217,7 +217,7 @@ final class RegexArrayShapeMatcher
 			if (
 				!$this->containsUnmatchedAsNull($flags, $matchesAll)
 				&& (
-					$onlyTopLevelAlternation->getAlternationsCount() !== count($onlyTopLevelAlternation->getGroupCombinations())
+					false
 					|| $isOptionalAlternation
 				)
 			) {
