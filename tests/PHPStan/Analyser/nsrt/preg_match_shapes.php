@@ -913,15 +913,31 @@ function bugEmptySubexpression (string $string): void {
 		assertType("array{string}", $matches); // could be array{''}
 	}
 
-	if (preg_match('(|a)', $string, $matches)) {
-		assertType("array{string, ''|'a'}", $matches);
+	if (preg_match('~|([a])~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
 	}
 
-	if (preg_match('(|a)', $string, $matches)) {
-		assertType("array{string, ''|'a'}", $matches);
+	if (preg_match('~([a])|~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
 	}
 
-	if (preg_match('(a||b)', $string, $matches)) {
-		assertType("array{string, ''|'a'|'b'}", $matches);
+	if (preg_match('~([a])||([b])~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
+	}
+
+	if (preg_match('~(|([a]))~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
+	}
+
+	if (preg_match('~(([a])|)~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
+	}
+
+	if (preg_match('~(([a])||([b]))~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
+	}
+
+	if (preg_match('~(([a])|()|([b]))~', $string, $matches)) {
+		assertType("xxxxxxxxxx", $matches);
 	}
 }
