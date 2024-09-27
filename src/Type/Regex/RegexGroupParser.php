@@ -298,6 +298,10 @@ final class RegexGroupParser
 		if ($rootAlternation !== null) {
 			$types = [];
 			foreach ($rootAlternation->getChildren() as $alternative) {
+				if ($alternative->getValueToken() === 'alternation') {
+					continue;
+				}
+
 				$types[] = $this->createGroupType($alternative, $maybeConstant, $patternModifiers);
 			}
 
