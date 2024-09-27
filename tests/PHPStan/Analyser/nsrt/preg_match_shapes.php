@@ -899,3 +899,29 @@ function bugUnescapedDashAfterRange (string $string): void {
 		assertType("array{string, non-empty-string}", $matches);
 	}
 }
+
+function bugEmptySubexpression (string $string): void {
+	if (preg_match('//', $string, $matches)) {
+		assertType("array{string}", $matches); // could be array{''}
+	}
+
+	if (preg_match('/()/', $string, $matches)) {
+		assertType("array{string, ''}", $matches); // could be array{'', ''}
+	}
+
+	if (preg_match('/|/', $string, $matches)) {
+		assertType("array{string}", $matches); // could be array{''}
+	}
+
+	if (preg_match('(|a)', $string, $matches)) {
+		assertType("array{string, ''|'a'}", $matches);
+	}
+
+	if (preg_match('(|a)', $string, $matches)) {
+		assertType("array{string, ''|'a'}", $matches);
+	}
+
+	if (preg_match('(a||b)', $string, $matches)) {
+		assertType("array{string, ''|'a'|'b'}", $matches);
+	}
+}
