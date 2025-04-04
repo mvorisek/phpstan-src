@@ -2,7 +2,6 @@
 /compiler/tmp
 /compiler/vendor
 /conf/config.local.yml
-/vendor
 /.idea/*
 !.idea/icon.png
 /tests/tmp
