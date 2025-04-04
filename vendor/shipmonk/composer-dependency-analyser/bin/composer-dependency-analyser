@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+use ShipMonk\ComposerDependencyAnalyser\Analyser;
+use ShipMonk\ComposerDependencyAnalyser\Exception\AbortException;
+use ShipMonk\ComposerDependencyAnalyser\Exception\InvalidCliException;
+use ShipMonk\ComposerDependencyAnalyser\Exception\InvalidConfigException;
+use ShipMonk\ComposerDependencyAnalyser\Exception\InvalidPathException;
+use ShipMonk\ComposerDependencyAnalyser\Initializer;
+use ShipMonk\ComposerDependencyAnalyser\Printer;
+use ShipMonk\ComposerDependencyAnalyser\Stopwatch;
+
+error_reporting(E_ALL);
+ini_set('display_errors', 'stderr');
+
+$psr4Prefix = 'ShipMonk\\ComposerDependencyAnalyser\\';
+
+// autoloader for own classes (do not rely on presence in composer's autoloader)
+spl_autoload_register(static function (string $class) use ($psr4Prefix): void {
+    if (strpos($class, $psr4Prefix) === 0) {
+        /** @var string $classWithoutPrefix */
+        $classWithoutPrefix = substr($class, strlen($psr4Prefix));
+        $file = __DIR__ . '/../src/' . str_replace('\\', '/', $classWithoutPrefix) . '.php';
+        require $file;
+    }
+});
+
+/** @var non-empty-string $cwd */
+$cwd = getcwd();
+
+$stdOutPrinter = new Printer(STDOUT);
+$stdErrPrinter = new Printer(STDERR);
+$initializer = new Initializer($cwd, $stdOutPrinter, $stdErrPrinter);
+$stopwatch = new Stopwatch();
+
+try {
+    $options = $initializer->initCliOptions($cwd, $argv);
+    $composerJson = $initializer->initComposerJson($options);
+    $initializer->initComposerAutoloader($composerJson);
+    $configuration = $initializer->initConfiguration($options, $composerJson);
+    $classLoaders = $initializer->initComposerClassLoaders();
+
+    $analyser = new Analyser($stopwatch, $composerJson->composerVendorDir, $classLoaders, $configuration, $composerJson->dependencies);
+    $result = $analyser->run();
+
+    $formatter = $initializer->initFormatter($options);
+    $exitCode = $formatter->format($result, $options, $configuration);
+
+} catch (
+    InvalidPathException |
+    InvalidConfigException |
+    InvalidCliException $e
+) {
+    $stdErrPrinter->printLine("\n<red>{$e->getMessage()}</red>" . PHP_EOL);
+    exit(255);
+
+} catch (AbortException $e) {
+    exit(0);
+}
+
+exit($exitCode);
+
+

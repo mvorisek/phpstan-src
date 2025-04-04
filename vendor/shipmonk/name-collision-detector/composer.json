@@ -1,0 +1,73 @@
+{
+    "name": "shipmonk/name-collision-detector",
+    "description": "Simple tool to find ambiguous classes or any other name duplicates within your project.",
+    "license": [
+        "MIT"
+    ],
+    "keywords": [
+        "namespace",
+        "collision",
+        "ambiguous",
+        "autoload",
+        "classname",
+        "autoloading"
+    ],
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "ext-json": "*",
+        "ext-tokenizer": "*",
+        "nette/schema": "^1.1.0"
+    },
+    "require-dev": {
+        "editorconfig-checker/editorconfig-checker": "^10.3.0",
+        "ergebnis/composer-normalize": "^2.19",
+        "phpstan/phpstan": "^1.8.7",
+        "phpstan/phpstan-phpunit": "^1.1.1",
+        "phpstan/phpstan-strict-rules": "^1.2.3",
+        "phpunit/phpunit": "^8.5.28 || ^9.5.20",
+        "shipmonk/composer-dependency-analyser": "^1.0.0",
+        "slevomat/coding-standard": "^8.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ShipMonk\\NameCollision\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ShipMonk\\NameCollision\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/detect-collisions"
+    ],
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": false,
+            "ergebnis/composer-normalize": true
+        },
+        "sort-packages": true
+    },
+    "scripts": {
+        "check": [
+            "@check:composer",
+            "@check:ec",
+            "@check:cs",
+            "@check:types",
+            "@check:tests",
+            "@check:dependencies",
+            "@check:self"
+        ],
+        "check:composer": "composer normalize --dry-run --no-check-lock --no-update-lock",
+        "check:cs": "phpcs",
+        "check:dependencies": [
+            "composer dump-autoload --classmap-authoritative",
+            "composer-dependency-analyser"
+        ],
+        "check:ec": "ec src tests",
+        "check:self": "bin/detect-collisions src",
+        "check:tests": "phpunit -vvv tests",
+        "check:types": "phpstan analyse -vvv",
+        "fix:cs": "phpcbf"
+    }
+}

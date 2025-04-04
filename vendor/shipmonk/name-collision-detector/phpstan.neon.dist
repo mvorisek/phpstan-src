@@ -1,0 +1,29 @@
+includes:
+    - phar://phpstan.phar/conf/config.levelmax.neon
+    - phar://phpstan.phar/conf/bleedingEdge.neon
+    - ./vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ./vendor/phpstan/phpstan-phpunit/extension.neon
+    - ./vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    paths:
+        - src
+        - tests
+    excludePaths:
+        analyseAndScan:
+            - tests/data/*
+    exceptions:
+        implicitThrows: false
+        checkedExceptionClasses:
+            - ShipMonk\NameCollision\Exception\RuntimeException
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+    tmpDir: cache/phpstan/
+    checkMissingCallableSignature: true
+    checkUninitializedProperties: true
+    checkTooWideReturnTypesInProtectedAndPublicMethods: true
+    ignoreErrors:
+        - # allow exception violations in tests
+            message: '#missing from the PHPDoc @throws tag\.$#'
+            path: tests/*

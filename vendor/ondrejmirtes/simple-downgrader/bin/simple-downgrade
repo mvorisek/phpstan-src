@@ -1,0 +1,33 @@
+#!/usr/bin/env php
+<?php declare(strict_types=1);
+
+use PhpParser\Parser\Php7;
+use PHPStan\PhpDocParser\Parser\ConstExprParser;
+use PHPStan\PhpDocParser\Parser\PhpDocParser;
+use PHPStan\PhpDocParser\Parser\TypeParser;
+use PHPStan\PhpDocParser\ParserConfig;
+use SimpleDowngrader\Console\DowngradeCommand;
+use SimpleDowngrader\Php\PhpPrinter;
+use Symfony\Component\Console\Application;
+
+foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+	if (file_exists($file)) {
+		require $file;
+		break;
+	}
+}
+
+$lexer = new \PhpParser\Lexer\Emulative();
+
+$parser = new Php7($lexer);
+
+$phpDocParserConfig = new ParserConfig(['lines' => true, 'indexes' => true]);
+$constExprParser = new ConstExprParser($phpDocParserConfig);
+$typeParser = new TypeParser($phpDocParserConfig, $constExprParser);
+$phpDocParser = new PhpDocParser($phpDocParserConfig, $typeParser, $constExprParser);
+$phpDocLexer = new PHPStan\PhpDocParser\Lexer\Lexer($phpDocParserConfig);
+
+$app = new Application();
+$app->add(new DowngradeCommand($parser, $phpDocLexer, $phpDocParser));
+$app->setCatchExceptions(false);
+$app->run();
